@@ -93,6 +93,7 @@ while True:
     victorias = analiticas.get("victorias")
     derrotas = analiticas.get("derrotas")
     empates = analiticas.get("empates")
+    winrate = analiticas.get("porcentaje")
 
     ## Eleccion del menu
 
@@ -100,11 +101,12 @@ while True:
         eligeUsuario = elementos[opcion] # Relacion directa entre el indice del elemento en la lista (array) con valor ingresado en input
     elif opcion == 5:
         ## Menu analiticas
-        print("Cantidad de partidas:", analiticas["partidas"])
-        print("Cantidad de victorias:", analiticas["victorias"])
-        print("Cantidad de derrotas:", analiticas["derrotas"])
+        print("Partidas totales:", analiticas["partidas"])
+        print("Victorias:", analiticas["victorias"])
+        print("Derrotas:", analiticas["derrotas"])
+        print("Empates:", analiticas["empates"])
         try: ## Esto esta en caso de el programa no caiga si el usuario no tiene victorias, ya que intenta dividir por 0. 
-            print("Winrate:", round(calculoPorcentaje(analiticas["victorias"], analiticas["partidas"])),"%")
+            print("Winrate:", winrate ,"%")
         except:
             print("Winrate: 0%. Error en division por cero. Una sola te pido que ganes....")
         continue
@@ -163,7 +165,11 @@ while True:
             analiticas["empates"] = empates
             print("Empate!\n")
             break
-    
+
+    # Al finalizar el bucle, calculo el winrate y lo actualizo
+    winrate = round(calculoPorcentaje(analiticas["victorias"], analiticas["partidas"]))
+    analiticas["porcentaje"] = winrate
+
     ## Abrimos el archivo 'analiticas.json' en formato de escritura ('w'), bajo la variable json_file. Luego, con json.dump(analiticas, json_file) 
     ## insertamos el diccionario analiticas en el archivo que se almacena como referencia en la variable json_file. De esta forma, cada vez que 
     ## finalicemos una ronda, antes de volver a jugar nos aseguramos de reescribir los datos en el json
