@@ -31,7 +31,7 @@ data = open('analiticas.json', 'r')
 ## y esa informacion, dentro del json.loads() la deserializamos a formato diccionario.
 analiticas = json.loads(data.read())
 
-## Bucle while True, para que al finalizar cada ronda, vuelva a ejecutarse de cero. Para finalizar programa o bucle, tenemos se usa 'break'
+## Bucle while True, para que al finalizar cada ronda, vuelva a ejecutarse de cero. Para finalizar programa o bucle, se usa 'break'
 while True:
 
     ## Menu
@@ -51,37 +51,37 @@ while True:
         print("\n#####################\n")
     except: ##Si el user ingresa una letra o signo, el try/except hace que no rompa el codigo, y en su lugar
         print("\n#####################") ## imprima una advertencia. 
-        print("\nValor invalido! Se debe ingresar un numero del 1 al 5")
+        print("\nValor invalido! Se debe ingresar un numero del 1 al 6")
         continue ## Con el continue reiniciamos el ciclo While.
 
     ## Creamos los elementos
     
     elementos = [{
-        "nombre": "Piedra",
+        "nombre": "piedra",
         "id": 0,
         "ganaContra": [2, 3],
         "pierdeContra": [1, 4],
     },
         {
-            "nombre": "Papel",
+            "nombre": "papel",
             "id": 1,
             "ganaContra": [0, 4],
             "pierdeContra": [2, 3],
     },
         {
-            "nombre": "Tijera",
+            "nombre": "tijera",
             "id": 2,
             "ganaContra": [1, 3],
             "pierdeContra": [0, 4],
     },
         {
-            "nombre": "Lagarto",
+            "nombre": "lagarto",
             "id": 3,
             "ganaContra": [1, 4],
             "pierdeContra": [0, 2],
     },
         {
-            "nombre": "Spock",
+            "nombre": "spock",
             "id": 4,
             "ganaContra": [0, 2],
             "pierdeContra": [1, 3],
@@ -98,14 +98,14 @@ while True:
     ## Eleccion del menu
 
     if opcion in range(0, 5):
-        eligeUsuario = elementos[opcion] # Relacion directa entre el indice del elemento en la lista (array) con valor ingresado en input
+        eligeUsuario = elementos[opcion] # Relacion directa entre el indice del elemento en la lista (array) "elementos" con valor ingresado en input
     elif opcion == 5:
         ## Menu analiticas
         print("Partidas totales:", analiticas["partidas"])
         print("Victorias:", analiticas["victorias"])
         print("Derrotas:", analiticas["derrotas"])
         print("Empates:", analiticas["empates"])
-        try: ## Esto esta en caso de el programa no caiga si el usuario no tiene victorias, ya que intenta dividir por 0. 
+        try: ## Esto esta para que el programa no caiga si el usuario no tiene victorias, ya que intenta dividir por 0. 
             print("Winrate:", winrate ,"%")
         except:
             print("Winrate: 0%. Error en division por cero. Una sola te pido que ganes....")
@@ -133,10 +133,10 @@ while True:
 
     ## Logica: 
     ## Cada elemento tiene un id y dos listas de id's de otros elementos; Una de elementos derrotables y otra de elementos que lo derrotan.
-    for num in eligeUsuario["ganaContra"]: ## Iteramos sobre dicha lista de posibles elementos derrotables del elemento elegido por el usuario.
+    for num in eligeUsuario["ganaContra"]: ## Iteramos sobre lista de posibles elementos derrotables del elemento elegido por el usuario.
 
         if eligeUsuario["id"] != eligePc["id"]: ## Descarta de inmediato si hay situacion de empate o no
-            if num == eligePc["id"]: ## Si el elemento que recorre en ese momento encuentra el id del elemento rival, se declara victoria para usuario.
+            if num == eligePc["id"]: ## Si el id recorrido iguala al id del elemento rival, se declara victoria para usuario.
                 print("Ganaste!!! ", eligeUsuario["nombre"], "le gana a", eligePc["nombre"], "\n")
                 ## Actualizamos estadisticas de victoria
                 partidas += 1
@@ -147,7 +147,6 @@ while True:
             elif eligeUsuario["id"] == eligePc["ganaContra"][i]: ## En caso de no encontrar victoria, checkea si el id de nuestro elemento se encuentra
                                                                  ## en la lista de id's derrotables por el elemento rival.    
                 print("Perdiste :/ ", eligeUsuario["nombre"], "pierde contra", eligePc["nombre"], "\n") ## En dicho caso, derrota para usuario.
-                
                 ## Actualizamos estadisticas de derrota
                 partidas += 1
                 analiticas["partidas"] = partidas
@@ -167,7 +166,9 @@ while True:
             break
 
     # Al finalizar el bucle, calculo el winrate y lo actualizo
-    winrate = round(calculoPorcentaje(analiticas["victorias"], analiticas["partidas"]))
+    winrate = round(calculoPorcentaje(analiticas["victorias"], analiticas["partidas"])) ## round() es para redondear. Paso por parametro las victorias 
+                                                                                        ## y las partidas totales. Hago asi en caso de que a futuro se quiera
+                                                                                        ## reutilizar la misma funcion en otros datos.
     analiticas["porcentaje"] = winrate
 
     ## Abrimos el archivo 'analiticas.json' en formato de escritura ('w'), bajo la variable json_file. Luego, con json.dump(analiticas, json_file) 
@@ -178,7 +179,7 @@ while True:
 
     # Opcion Reinicio
     again = input("Jugamos de nuevo? Si/No: ")
-    if 'si' in again.lower():
+    if 'si' in again.lower(): ## el metodo .lower() transforma todo a texto en minuscula, mas eficiente para el user
         continue
     elif 'no' in again.lower():
         print("Nos vemos!")
