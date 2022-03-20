@@ -1,26 +1,43 @@
+# Importamos el random para que la eleccion de la computadora sea aleatoria
 import random
+# Importamos la biblioteca de JSON para trabajar con un archivo .json y tener persistencia
+# de datos.
+import json
 
 ## Declaramos funcion calculoPorcentaje y diccionario de analiticas fuera del While
 # para que no se actualice a cada vuelta del bucle
+
 def calculoPorcentaje(vic, total):
     porcentaje = (vic * 100) / total
+    analiticas["porcentaje"] = porcentaje
     return porcentaje
 
 ## Diccionario donde se almacenan estadisticas
-analiticas = {
-        "partidas": 0,
-        "victorias": 0,
-        "derrotas": 0,
-        "empates": 0,
-        "porcentaje": calculoPorcentaje
-    }
+# analiticas = {
+#         "partidas": 0,
+#         "victorias": 0,
+#         "derrotas": 0,
+#         "empates": 0,
+#         "porcentaje": 0
+#     }
+## Lo dejo comentado porque no necesito declararlo, ya que lo extraigo
+## directamente del archivo json
+
+
+## open() trae el archivo analiticas en modo lectura.
+data = open('analiticas.json', 'r')
+
+## Los diccionarios de python son un objeto para JSON, por lo que con data.read() leemos el archivo
+## y esa informacion, dentro del json.loads() la deserializamos a formato diccionario.
+analiticas = json.loads(data.read())
 
 while True:
 
     ## Menu
 
+    ## Computadora elige numero aleatorio desde el 0 hasta (sin incluir) el 5
     aleatorio = random.randrange(0, 5)
-    elijePc = ""
+
     print("\n")
     print("0) Piedra")
     print("1) Papel")
@@ -29,13 +46,16 @@ while True:
     print("4) Spock")
     print("5) Ver estadisticas")
     print("6) Salir del Programa")
+    
+    
+    
     try:
-        opcion = int(input("Que eliges: "))
+        opcion = int(input("Que eliges: ")) ## Aclaramos que el input debe ser de tipo int.
         print("\n#####################\n")
-    except:
-        print("\n#####################")
+    except: ##Si el user ingresa una letra o signo, el try/except hace que no rompa el codigo, y en su lugar
+        print("\n#####################") ## imprima que el valor es invalido. 
         print("\nValor invalido! Se debe ingresar un numero del 1 al 5")
-        continue
+        continue ## Con el continue reiniciamos el ciclo While.
 
     ## Creamos los elementos
     
@@ -86,7 +106,7 @@ while True:
         print("Cantidad de victorias:", analiticas["victorias"])
         print("Cantidad de derrotas:", analiticas["derrotas"])
         try:
-            print("Winrate:", round(analiticas["porcentaje"](analiticas["victorias"], analiticas["partidas"])),"%")
+            print("Winrate:", round(calculoPorcentaje(analiticas["victorias"], analiticas["partidas"])),"%")
         except:
             print("Winrate: 0%. Error en division por cero. Una sola partida te pido que ganes....")
         continue
@@ -141,6 +161,12 @@ while True:
             analiticas["empates"] = empates
             print("Empate!\n")
             break
+    
+    ## Abrimos el archivo 'analiticas.json' en formato de escritura ('w'), bajo la variable json_file. Luego, con json.dump(analiticas, json_file) 
+    ## insertamos el diccionario analiticas en el archivo que se almacena como referencia en la variable json_file. De esta forma, cada vez que 
+    ## finalicemos una ronda, antes de volver a jugar nos aseguramos de reescribir los datos en el json
+    with open('analiticas.json', 'w') as json_file:
+        json.dump(analiticas, json_file)
 
     # Opcion Reinicio
     again = input("Jugamos de nuevo? Si/No: ")
